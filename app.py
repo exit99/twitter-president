@@ -13,6 +13,7 @@ def create_app():
     app = Flask(__name__)
     app.debug = True
     app.config['SECRET_KEY'] = 'secret!'
+    app.config['REDIS_HOST'] = '127.0.0.1'
     configure_logging()
     app = configure_extensions(app)
     app = register_blueprints(app)
