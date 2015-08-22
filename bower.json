@@ -1,0 +1,19 @@
+{
+  "name": "hello-twitter-stream",
+  "version": "0.0.0",
+  "authors": [
+    "Zach Kazanski <kazanski.zachary@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "datamaps": "~0.4.0"
+  }
+}

@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Flask-SocketIO Test</title>
+
+    <!-- For sockets. -->
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+
+    <!-- For map. -->
+    {% assets "js_all" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    
+    <script type="text/javascript" charset="utf-8">
+        // $(document).ready(function(){
+        //     var socket = io.connect('http://' + document.domain + ':' + location.port);
+        //     socket.on('connect', function() {
+        //         socket.emit('my event', {data: "I'm connected!"});
+        //     });
+
+        //     socket.on('message', function(msg) {
+        //         console.log('got it');
+        //     });
+        // });
+    </script>
+
+</head>
+<body>
+    <div id="container" style="position: relative; width: 500px; height: 300px;"></div>
+</body>
+</html>
