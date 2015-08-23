@@ -1,40 +1,59 @@
-import json
-
-# Import the necessary methods from tweepy library
+from flask import current_app
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
 
 
-# Variables that contains the user credentials to access Twitter API
-access_token = "154999421-iJ1K3B0g3RbsVoLf0uwy2hrhb5MdJGhpj6aU2FqV"
-access_token_secret = "bfo25pn6ZVB7tKldc0CDNRqaxKVk7m0Pam6hSYzi7DSYB"
-consumer_key = "I65i99rig1qoilMrVnzthm7UB"
-consumer_secret = "2Kv2ZGptBMuD9dKsp7QNsOYKI5B69m7tt4myFzURilLDZQND0g"
-
-
-# This is a basic listener that just prints received tweets to stdout.
 class StdOutListener(StreamListener):
+    def __init__(self, on_data_func):
+        self.on_data_func = on_data_func
+        return super(StdOutListener, self).__init__()
+
     def on_data(self, data):
         """Continues grabbing tweets as long as this returns True."""
-        # Do stuff with it here
+        self.on_data_func(data)
         return True
 
     def on_error(self, status):
         print status
 
 
-def create_tweets(keywords):
-    """Returns a list of tweets for the given keywors
+class TwitterThreadController(object):
+    def __init__(self, *args, **kwargs):
+        self.threads = {}
+        config = current_app.config
+        self.access_token = config['TWITTER_ACCESS_TOKEN']
+        self.access_token_secret = config['TWITTER_ACCESS_TOKEN_SECRET']
+        self.consumer_key = config['TWITTER_CONSUMER_KEY']
+        self.consumer_secret = config['TWITTER_CONSUMER_KEY_SECRET']
+        return super(TwitterThreadController, self).__init__(*args, **kwargs)
 
-    :param keywords: A list of keywords to search for.
-    """
-    # This handles Twitter authetification and the connection to Twitter Streaming API
-    l = StdOutListener()
-    auth = OAuthHandler(consumer_key, consumer_secret)
-    auth.set_access_token(access_token, access_token_secret)
-    stream = Stream(auth, l)
+    def start_thread(self, keyword, func):
+        """Starts thread and stores them on the class."""
+        assert keyword not in self.threads
+        # TODO: This func needs to take an argument (the keyword) when it
+        # starts.
+        thread = Thread(target=func)
+        thread.start()
+        self.thread[keyword] = thread
 
-    # This line filter Twitter Streams to capture data by the keywords: "Obama"
-    stream.filter(track=keywords)
-    return l.filtered_tweets
+    def create_tweets(self, keywords):
+        """Returns a list of tweets for the given keywords."""
+        stream = self.connect_to_twitter()
+        stream.filter(track=keywords)
+        return l.filtered_tweets
+
+    def connect_to_twitter(self)
+        """Handles Twitter authetication and the Streaming API connection."""
+        l = StdOutListener(self._on_data_func)
+        auth = OAuthHandler(self.consumer_key, self.consumer_secret)
+        auth.set_access_token(self.access_token, self.access_token_secret)
+        stream = Stream(auth, l)
+        return stream
+
+    def _on_data_func(self, data):
+        socketio.emit('message', {'broadcast': True})
+        return data
+
+
+

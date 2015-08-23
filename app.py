@@ -6,7 +6,9 @@ monkey.patch_all()
 from flask import Flask
 from flask.ext import assets
 
+import local_settings
 from extensions import env, socketio
+from twitter import TwitterThreadController
 
 
 def create_app():
@@ -14,9 +16,12 @@ def create_app():
     app.debug = True
     app.config['SECRET_KEY'] = 'secret!'
     app.config['REDIS_HOST'] = '127.0.0.1'
+    app.config['TWITTER_KEYWORDS'] = ['Trump', 'Clinton']
+    app.config.from_object(local_settings)
     configure_logging()
     app = configure_extensions(app)
     app = register_blueprints(app)
+    start_threads(app)
     return app
 
 
@@ -53,3 +58,11 @@ def register_blueprints(app):
     from views import map_blueprint
     app.register_blueprint(map_blueprint)
     return app
+
+
+def start_threads(app):
+    for keywords in app.config['TWITTER_KEYWORDS']:
+        thread_controller.create_tweets(keywords)
+        thread_controller.start_thread(
+            keywords, thread_controller.create_tweets
+        )
