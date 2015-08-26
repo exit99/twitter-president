@@ -2,12 +2,14 @@ import logging
 import os
 from gevent import monkey
 monkey.patch_all()
+monkey.patch_socket()
+monkey.patch_ssl()
 
+import indicoio
 from flask import Flask
 from flask.ext import assets
 
 import local_settings
-from extensions import env, socketio
 from twitter import TwitterThreadController
 
 
@@ -16,7 +18,7 @@ def create_app():
     app.debug = True
     app.config['SECRET_KEY'] = 'secret!'
     app.config['REDIS_HOST'] = '127.0.0.1'
-    app.config['TWITTER_KEYWORDS'] = ['Trump', 'Clinton']
+    app.config['TWITTER_KEYWORDS'] = ['Clinton']
     app.config.from_object(local_settings)
     configure_logging()
     app = configure_extensions(app)
@@ -30,6 +32,8 @@ def configure_logging():
 
 
 def configure_extensions(app):
+    from extensions import env, socketio
+    indicoio.config.api_key = app.config['INDICO_API_KEY']
     socketio.init_app(app)
     env.init_app(app)
     with app.app_context():
@@ -61,8 +65,9 @@ def register_blueprints(app):
 
 
 def start_threads(app):
+    with app.app_context():
+        thread_controller = TwitterThreadController()
     for keywords in app.config['TWITTER_KEYWORDS']:
-        thread_controller.create_tweets(keywords)
         thread_controller.start_thread(
             keywords, thread_controller.create_tweets
         )

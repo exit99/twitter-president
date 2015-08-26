@@ -1,8 +1,4 @@
-import time
-from threading import Thread
-
 from flask import Blueprint, render_template
-
 from extensions import socketio
 
 
