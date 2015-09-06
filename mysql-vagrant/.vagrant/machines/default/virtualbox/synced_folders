@@ -1,0 +1,1 @@
+{"virtualbox":{"/vagrant":{"mount_options":["dmode=777","fmode=666"],"guestpath":"/vagrant","hostpath":"/Users/kazanz/projects/personal/twitter-presidential-campaign-monitor/mysql-vagrant","disabled":false}}}

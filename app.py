@@ -1,16 +1,13 @@
 import logging
 import os
-from gevent import monkey
-monkey.patch_all()
-monkey.patch_socket()
-monkey.patch_ssl()
 
 import indicoio
 from flask import Flask
 from flask.ext import assets
 
 import local_settings
-from twitter import TwitterThreadController
+from constants import CANDIDATES
+from twitter import start_twitter_streams
 
 
 def create_app():
@@ -18,12 +15,16 @@ def create_app():
     app.debug = True
     app.config['SECRET_KEY'] = 'secret!'
     app.config['REDIS_HOST'] = '127.0.0.1'
-    app.config['TWITTER_KEYWORDS'] = ['Clinton']
     app.config.from_object(local_settings)
     configure_logging()
     app = configure_extensions(app)
     app = register_blueprints(app)
-    start_threads(app)
+    app = start_threads(app)
+    return app
+
+
+def start_threads(app):
+    app.twiiter_thread = start_twitter_streams(CANDIDATES)
     return app
 
 
@@ -62,12 +63,3 @@ def register_blueprints(app):
     from views import map_blueprint
     app.register_blueprint(map_blueprint)
     return app
-
-
-def start_threads(app):
-    with app.app_context():
-        thread_controller = TwitterThreadController()
-    for keywords in app.config['TWITTER_KEYWORDS']:
-        thread_controller.start_thread(
-            keywords, thread_controller.create_tweets
-        )
