@@ -1,3 +1,6 @@
+"""
+Use this to view any threads you have running.
+"""
 import traceback
 import sys
 print >> sys.stderr, "\n*** STACKTRACE - START ***\n"

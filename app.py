@@ -7,33 +7,28 @@ from flask.ext import assets
 
 import local_settings
 from constants import CANDIDATES
-from twitter import start_twitter_streams
 
 
-def create_app():
+def create_app(threads=True):
     app = Flask(__name__)
     app.debug = True
     app.config['SECRET_KEY'] = 'secret!'
     app.config['REDIS_HOST'] = '127.0.0.1'
     app.config.from_object(local_settings)
-    configure_logging()
+    configure_logging(app)
     app = configure_extensions(app)
     app = register_blueprints(app)
-    app = start_threads(app)
     return app
 
 
-def start_threads(app):
-    app.twiiter_thread = start_twitter_streams(CANDIDATES)
-    return app
-
-
-def configure_logging():
-    logging.basicConfig()
+def configure_logging(app):
+    logging.basicConfig(filename=app.config['LOGGING_FILE'],
+                        level=logging.WARNING)
 
 
 def configure_extensions(app):
-    from extensions import env, socketio
+    from extensions import db, env, socketio
+    db.init_app(app)
     indicoio.config.api_key = app.config['INDICO_API_KEY']
     socketio.init_app(app)
     env.init_app(app)

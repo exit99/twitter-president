@@ -51,7 +51,7 @@ STATES = {
     "WYOMING":	"WY",
 }
 
-PARTIES = {
+ELECTION_CANDIDATES = {
     "republican": [
         "jeb bush",
         "donald trump",
@@ -74,6 +74,8 @@ PARTIES = {
         "jim webb",
         "lincoln chafee",
         "martin o'malley"
-    ]
+    ],
+    "independent": [],
 }
-CANDIDATES = [item for sublist in PARTIES.values() for item in sublist]
+CANDIDATES = [item for sublist in ELECTION_CANDIDATES.values() for item in sublist]
+PARTIES = [(party, party) for party in ELECTION_CANDIDATES.keys()]

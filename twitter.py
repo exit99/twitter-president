@@ -1,4 +1,5 @@
 import json
+import logging
 import sys
 import threading
 if 'threading' in sys.modules:
@@ -8,6 +9,8 @@ import gevent
 import gevent.socket
 import gevent.monkey
 gevent.monkey.patch_all()
+from datetime import datetime
+from random import randint
 
 import indicoio
 from tweepy.streaming import StreamListener
@@ -15,28 +18,34 @@ from tweepy import OAuthHandler
 from tweepy import Stream
 
 import local_settings
-from constants import CANDIDATES, PARTIES, STATES
-from extensions import socketio
+from constants import CANDIDATES, STATES
+from models import PresidentialCandidate
 
 
 class StdOutListener(StreamListener):
     def __init__(self, *args, **kwargs):
+        StdOutListener.configure_logging()
         self.keyword = kwargs.pop('keyword')
         return super(StdOutListener, self).__init__(self, *args, **kwargs)
 
     def on_error(self, status):
-        print "ERRRR" * 10
-        print status
+        logging.warning('{}: Twitter API Failure - {}'.format(
+            status, datetime.now()
+        ))
+        print "Error: {}".format(status)
 
     def on_data(self, data):
         """Continues grabbing tweets as long as this returns True."""
         tweet = Tweet(json.loads(data))
         if tweet.is_relevant:
-            print tweet.state, tweet.sentiment_score, tweet.candidates, tweet.text
-            # TODO YOU ARE HERE SENDING THE DATA TO THE CLIENT.
-            # Todo save to database here.
-            # socketio.emit('message', {'broadcast': True})
+            tweet.log_for_audit()
+            tweet.save()
         return True
+
+    @staticmethod
+    def configure_logging():
+        logging.basicConfig(filename=local_settings.LOGGING_FILE,
+                            level=logging.INFO)
 
 
 def start_twitter_streams(keywords):
@@ -93,6 +102,11 @@ class Tweet(object):
                            if candidate.lower() in self.text.lower()]
         super(Tweet, self).__init__()
 
+    def save(self):
+        for candidate in self.candidates:
+            pc = PresidentialCandidate.query.get_or_create(name=candidate)
+            pc.update_sentiment_score(unicode(self.state), self.sentiment_score)
+        print "success"
 
     @property
     def is_relevant(self):
@@ -120,3 +134,9 @@ class Tweet(object):
                         break
             self._state = user_state
         return self._state
+
+    def log_for_audit(self):
+        """Randomly log so we can check sentiment score is accurate."""
+        if randint(0, 20) == 1:  # 5% chance.
+            logging.info(self.state, self.sentiment_score,
+                         self.candidates, self.text)
