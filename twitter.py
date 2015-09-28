@@ -12,10 +12,11 @@ gevent.monkey.patch_all()
 from datetime import datetime
 from random import randint
 
-import indicoio
+from flask import current_app
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
+import indicoio
 
 import local_settings
 from constants import CANDIDATES, STATES
@@ -24,8 +25,11 @@ from models import PresidentialCandidate
 
 class StdOutListener(StreamListener):
     def __init__(self, *args, **kwargs):
-        StdOutListener.configure_logging()
+        print kwargs
+        self.app = kwargs.pop('app')
         self.keyword = kwargs.pop('keyword')
+        self.socketio = kwargs.pop('socketio', None)
+        StdOutListener.configure_logging()
         return super(StdOutListener, self).__init__(self, *args, **kwargs)
 
     def on_error(self, status):
@@ -39,7 +43,9 @@ class StdOutListener(StreamListener):
         tweet = Tweet(json.loads(data))
         if tweet.is_relevant:
             tweet.log_for_audit()
-            tweet.save()
+            with self.app.app_context():
+                # self.socketio.emit('tweet', {1:'Sweet'}, namespace="/test")
+                tweet.save()
         return True
 
     @staticmethod
@@ -48,32 +54,34 @@ class StdOutListener(StreamListener):
                             level=logging.INFO)
 
 
-def start_twitter_streams(keywords):
-    keyword_stream(keywords)
-    thread = threading.Thread(target=keyword_stream, args=(keywords,))
-    thread.start()
-    return thread
+class TwitterStream(object):
+    def __init__(self, app, socketio=None):
+        self.app = app
+        self.socketio = socketio
 
+    def create_stream(self, keywords):
+        return threading.Thread(target=self.keyword_stream, args=(keywords,))
 
-def stream_api_connection(keyword):
-    """Handle Twitter authetification and the connection to Streaming API."""
-    access_token = local_settings.TWITTER_ACCESS_TOKEN
-    access_token_secret = local_settings.TWITTER_ACCESS_TOKEN_SECRET
-    consumer_key = local_settings.TWITTER_CONSUMER_KEY
-    consumer_secret = local_settings.TWITTER_CONSUMER_KEY_SECRET
+    def keyword_stream(self, keywords):
+        if not isinstance(keywords, list):
+            keywords = [keywords]
+        stream = self.stream_api_connection(keywords)
+        stream.filter(track=keywords)
 
-    l = StdOutListener(keyword=keyword)
-    auth = OAuthHandler(consumer_key, consumer_secret)
-    auth.set_access_token(access_token, access_token_secret)
-    stream = Stream(auth, l)
-    return stream
+    def stream_api_connection(self, keyword):
+        """Handle Twitter authetification and the connection to Streaming API."""
+        access_token = local_settings.TWITTER_ACCESS_TOKEN
+        access_token_secret = local_settings.TWITTER_ACCESS_TOKEN_SECRET
+        consumer_key = local_settings.TWITTER_CONSUMER_KEY
+        consumer_secret = local_settings.TWITTER_CONSUMER_KEY_SECRET
 
-
-def keyword_stream(keywords):
-    if not isinstance(keywords, list):
-        keywords = [keywords]
-    stream = stream_api_connection(keywords)
-    stream.filter(track=keywords)
+        print self.app, "IN TS"
+        l = StdOutListener(app=self.app, keyword=keyword,
+                           socketio=self.socketio)
+        auth = OAuthHandler(consumer_key, consumer_secret)
+        auth.set_access_token(access_token, access_token_secret)
+        stream = Stream(auth, l)
+        return stream
 
 
 class Tweet(object):

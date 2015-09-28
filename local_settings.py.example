@@ -1,0 +1,15 @@
+TWITTER_ACCESS_TOKEN = ""
+TWITTER_ACCESS_TOKEN_SECRET  = ""
+TWITTER_CONSUMER_KEY  = ""
+TWITTER_CONSUMER_KEY_SECRET  = ""
+INDICO_API_KEY = ""
+
+SQLALCHEMY_DATABASE_URI = '{}://{}:{}@{}/{}'.format(
+    'mysql+pymysql',
+    'root',
+    'root',
+    '33.33.33.1',
+    'twitter_campaign'
+)
+
+LOGGING_FILE = "/tmp/twitter-president.log"

@@ -4,7 +4,6 @@ from flask.ext.script import Manager
 from app import create_app
 from constants import CANDIDATES
 from extensions import socketio, db
-from twitter import start_twitter_streams
 
 
 app = create_app()
@@ -13,8 +12,7 @@ manager = Manager(app)
 
 @manager.command
 def runserver():
-    start_twitter_streams(CANDIDATES)
-    socketio.run(app)
+    socketio.run(app, use_reloader=False)
 
 
 @manager.command
