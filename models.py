@@ -32,9 +32,9 @@ class PresidentialCandidate(ModelMixin, Base):
         while True:
             for item in pubsub.listen():
                 data = item['data']
-                socketio.emit('my response',
+                socketio.emit(cls.msg_name,
                       {'data': data},
-                      namespace='/test')
+                      namespace=cls.namespace)
 
     def __repr__(self):
         return "<PresidentialCandidate '{}'>".format(self.name)

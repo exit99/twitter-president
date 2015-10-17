@@ -12,13 +12,15 @@
     <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
     <script type="text/javascript" charset="utf-8">
+        MSG_NAME = "{{ msg_name }}";
+        NAMESPACE = "{{ namespace }}";
+
         $(document).ready(function(){
-            namespace = '/test';
-            var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+            var socket = io.connect('http://' + document.domain + ':' + location.port + NAMESPACE);
             socket.on('connect', function() {
                 // This function does nothing but is needed to make socketio work.
             });
-            socket.on('my response', function(msg) {
+            socket.on(MSG_NAME, function(msg) {
                 $('#log').append('<br>Received #' + msg.count + ': ' + msg.data);
             });
         });

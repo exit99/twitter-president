@@ -27,7 +27,7 @@ def index():
     return render_template('index.html', **ctx)
 
 
-@socketio.on('my event', namespace='/test')
+@socketio.on('my event', namespace=PresidentialCandidate.namespace)
 def test_message(message):
-    """This must be here for socketio to communicate."""
+    """This must be here for socketio to work."""
     pass
