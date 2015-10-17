@@ -14,18 +14,7 @@
     <script type="text/javascript" charset="utf-8">
         MSG_NAME = "{{ msg_name }}";
         NAMESPACE = "{{ namespace }}";
-
-        $(document).ready(function(){
-            var socket = io.connect('http://' + document.domain + ':' + location.port + NAMESPACE);
-            socket.on('connect', function() {
-                // This function does nothing but is needed to make socketio work.
-            });
-            socket.on(MSG_NAME, function(msg) {
-                $('#log').append('<br>Received #' + msg.count + ': ' + msg.data);
-            });
-        });
     </script>
-
 </head>
 <body>
     <div id="container" style="position: relative; width: 500px; height: 300px;"></div>

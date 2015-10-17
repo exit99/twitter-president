@@ -528,3 +528,16 @@ ready = function() {
 $(document).ready(ready);
 
 $(document).on('page:load', ready);
+
+ready = function() {
+  var socket;
+  socket = io.connect('http://' + document.domain + ':' + location.port + NAMESPACE);
+  socket.on('connect', function() {});
+  return socket.on(MSG_NAME, function(msg) {
+    return $('#log').append('<br>Received #' + msg.count + ': ' + msg.data);
+  });
+};
+
+$(document).ready(ready);
+
+$(document).on('page:load', ready);

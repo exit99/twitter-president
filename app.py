@@ -1,3 +1,8 @@
+# This patch is needed for flask-assets to work in development.
+# Otherwise select.so.poll() throws an attribute error.
+from gevent import monkey
+monkey.patch_all()
+
 import logging
 import os
 
@@ -35,7 +40,7 @@ def configure_static(app):
     env.init_app(app)
     with app.app_context():
         env.load_path = [
-            os.path.join(os.path.dirname(__file__), 'bower_components')
+            os.path.join(os.path.dirname(__file__), 'bower_components'),
         ]
     env.register(
         'js_all',
@@ -47,6 +52,7 @@ def configure_static(app):
             assets.Bundle(
                 'coffee/map.coffee',
                 'coffee/sockets.coffee',
+                'coffee/pres_socket.coffee',
                 filters=['coffeescript']
             ),
             output='js_all.js'
