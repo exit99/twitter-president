@@ -1,22 +1,12 @@
 import json
 import logging
-import sys
-import threading
-if 'threading' in sys.modules:
-    del sys.modules['threading']
-
-import gevent
-import gevent.socket
-import gevent.monkey
-gevent.monkey.patch_all()
 from datetime import datetime
 from random import randint
 
-from flask import current_app
+import indicoio
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
-import indicoio
 
 import local_settings
 from constants import CANDIDATES, STATES
@@ -37,7 +27,6 @@ class Listener(StreamListener):
     def on_data(self, data):
         """Continues grabbing tweets as long as this returns True."""
         tweet = Tweet(json.loads(data))
-        print tweet
         if tweet.is_relevant:
             tweet.log_for_audit()
             tweet.save()
@@ -79,7 +68,7 @@ class Tweet(object):
         for candidate in self.candidates:
             pc = PresidentialCandidate.get_or_create(name=candidate)
             pc.update_sentiment_score(unicode(self.state), self.sentiment_score)
-        print "success"
+            pc.publish()
 
     @property
     def is_relevant(self):

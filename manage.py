@@ -2,6 +2,7 @@
 from flask.ext.script import Manager
 
 from app import create_app
+from extensions import socketio
 
 app = create_app()
 manager = Manager(app)
@@ -9,7 +10,7 @@ manager = Manager(app)
 
 @manager.command
 def runserver():
-    app.run()
+    socketio.run(app)
 
 
 def main():

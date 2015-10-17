@@ -1,32 +1,33 @@
-import gevent
-from flask import Blueprint, current_app, render_template
+# For flask-socketio.
+from gevent import monkey
+monkey.patch_all()
+from threading import Thread
+
+from flask import Blueprint, render_template
+
 from extensions import socketio
-
-from constants import CANDIDATES
-from twitter import stream_api_connection
+from models import PresidentialCandidate
 
 
+thread = None
 map_blueprint = Blueprint('map_blueprint', __name__,
                           template_folder="templates")
 
 
-stream = stream_api_connection()
-streams = []
-
-
 @map_blueprint.route('/')
 def index():
-    if not streams:
-        streams.append(stream.filter(track=[CANDIDATES], async=True))
-    return render_template('index.html')
+    global thread
+    if thread is None:
+        thread = Thread(target=PresidentialCandidate.subscribe)
+        thread.start()
+    ctx = {
+        'namespace': PresidentialCandidate.namespace,
+        'msg_name': PresidentialCandidate.msg_name,
+    }
+    return render_template('index.html', **ctx)
 
 
-@socketio.on('tweet', namespace="/test")
-def handle_message(message=None):
-    import pdb; pdb.set_trace()
-    print('received message: ' + message)
-
-
-@socketio.on_error_default
-def default_error_handler(e):
+@socketio.on('my event', namespace='/test')
+def test_message(message):
+    """This must be here for socketio to communicate."""
     pass

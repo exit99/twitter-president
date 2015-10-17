@@ -4,18 +4,19 @@ import os
 from flask import Flask
 from flask.ext import assets
 
+import config
 import local_settings
 
 
-def create_app(threads=True):
+def create_app():
     app = Flask(__name__)
     app.debug = True
-    app.config['SECRET_KEY'] = 'secret!'
-    app.config['REDIS_HOST'] = '127.0.0.1'
+    app.config.from_object(config)
     app.config.from_object(local_settings)
     configure_logging(app)
-    app = configure_extensions(app)
-    app = register_blueprints(app)
+    configure_extensions(app)
+    configure_static(app)
+    register_blueprints(app)
     return app
 
 
@@ -25,9 +26,12 @@ def configure_logging(app):
 
 
 def configure_extensions(app):
-    from extensions import db, env, socketio
-    db.init_app(app)
+    from extensions import socketio
     socketio.init_app(app)
+
+
+def configure_static(app):
+    from extensions import env
     env.init_app(app)
     with app.app_context():
         env.load_path = [
@@ -48,10 +52,8 @@ def configure_extensions(app):
             output='js_all.js'
         )
     )
-    return app
 
 
 def register_blueprints(app):
     from views import map_blueprint
     app.register_blueprint(map_blueprint)
-    return app
