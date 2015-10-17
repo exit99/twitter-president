@@ -62,7 +62,7 @@ ELECTION_CANDIDATES = {
         "lindesey graham",
         "mike huckabee",
         "rand paul",
-        "rick perry"
+        "rick perry",
         "chris christie",
         "rick santorum",
         "scott walker",

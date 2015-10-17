@@ -100,8 +100,9 @@ class Tweet(object):
     def log_for_audit(self):
         """Randomly log so we can check sentiment score is accurate."""
         if randint(0, 20) == 1:  # 5% chance.
-            logging.info(self.state, self.sentiment_score,
-                         self.candidates, self.text)
+            logging.info("{}, {}, {}".format(
+                self.state, self.sentiment_score, self.candidates, self.text)
+            )
 
 
 def start_stream(track):

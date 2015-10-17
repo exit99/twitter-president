@@ -57,7 +57,7 @@ class PresidentialCandidate(_SocketMixin, ModelMixin, Base):
 class TweetSentiment(_SocketMixin, ModelMixin, Base):
     __tablename__ = "candidate_tweet_sentiment"
     pk = Column(Integer, primary_key=True)
-    sentiment = Column(Float, default=0.0)
+    _sentiment = Column(Float, default=0.0)
     total_tweets = Column(Integer, default=0)
     state = Column(ChoiceType([(abbr, abbr) for abbr in STATES.values()]))
     _candidate_pk = Column('candidate_pk', Integer,
@@ -70,13 +70,17 @@ class TweetSentiment(_SocketMixin, ModelMixin, Base):
 
     def update_score(self, score):
         self.total_tweets += 1
-        self.sentiment = (self.sentiment + score) / self.total_tweets
+        self._sentiment = self._sentiment + score
         session.add(self)
         session.commit()
 
     def publish(self):
         msg = "{}-{}".format(self.__class__.__name__, self.pk)
         redis.publish(self.channel, msg)
+
+    @property
+    def sentiment(self):
+        return self._sentiment / self.total_tweets
 
     @property
     def map_data(self):
