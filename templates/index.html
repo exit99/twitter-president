@@ -3,19 +3,38 @@
 <head>
     <title>Flask-SocketIO Test</title>
 
-    <!-- For map. -->
-    {% assets "js_all" %}
-        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-    {% endassets %}
+    <style>
+        #map-container {
+            float: left;
+            width: 50%;
+            height: 500px;
+        }
 
-    <!-- For sockets. -->
+        #candidate-table {
+            float: right;
+        }
+    </style>
+
     <script type="text/javascript" charset="utf-8">
         MSG_NAME = "{{ msg_name }}";
         NAMESPACE = "{{ namespace }}";
+        MAP_DATA = {{ map_data|safe }};
     </script>
+
+    {% assets "js_all" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
 </head>
 <body>
-    <div id="container" style="position: relative; width: 500px; height: 300px;"></div>
-    <div id="log"></div>
+    <div id="map-container"></div>
+    <table id="candidate-table">
+        {% for candidate in candidates %}
+            <tr>
+                <td><a onclick="window.render_map('{{ candidate }}')" href="#" id="{{ candidate }}">{{ candidate }}</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+            
+    <div id="log">BOO</div>
 </body>
 </html>

@@ -16,7 +16,7 @@ redis = StrictRedis(host=config.REDIS_HOST)
 
 indicoio.config.api_key = local_settings.INDICO_API_KEY
 
-engine = create_engine(local_settings.SQLALCHEMY_DATABASE_URI, echo=True)
+engine = create_engine(local_settings.SQLALCHEMY_DATABASE_URI)
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
 session = Session()

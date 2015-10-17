@@ -1,3 +1,4 @@
+import json
 # For flask-socketio.
 from gevent import monkey
 monkey.patch_all()
@@ -5,6 +6,7 @@ from threading import Thread
 
 from flask import Blueprint, render_template
 
+from constants import CANDIDATES
 from extensions import socketio
 from models import PresidentialCandidate
 
@@ -23,6 +25,8 @@ def index():
     ctx = {
         'namespace': PresidentialCandidate.namespace,
         'msg_name': PresidentialCandidate.msg_name,
+        'map_data': json.dumps(PresidentialCandidate.current_map_data()),
+        'candidates': CANDIDATES
     }
     return render_template('index.html', **ctx)
 

@@ -8,22 +8,21 @@ from extensions import Base, session, redis, socketio
 from mixins import ModelMixin
 
 
-class PresidentialCandidate(ModelMixin, Base):
-    __tablename__ = "presidential_candidate"
-    pk = Column(Integer, primary_key=True)
-    name = Column(String(120))
-
+class _SocketMixin():
     channel = config.SENTIMENT_REDIS_CHANNEL
     msg_name = config.PRESIDENTIAL_SOCKETIO_MSG_NAME
     namespace = config.PRESIDENTIAL_SOCKETIO_NAMESPACE
 
+
+class PresidentialCandidate(_SocketMixin, ModelMixin, Base):
+    __tablename__ = "presidential_candidate"
+    pk = Column(Integer, primary_key=True)
+    name = Column(String(120))
+
     def update_sentiment_score(self, state, score):
         ts = TweetSentiment.get_or_create(candidate=self, state=state)
         ts.update_score(score)
-
-    def publish(self):
-        msg = "{}-{}".format(self.__class__.__name__, self.pk)
-        redis.publish(self.channel, msg)
+        ts.publish()
 
     @classmethod
     def subscribe(cls):
@@ -31,16 +30,31 @@ class PresidentialCandidate(ModelMixin, Base):
         pubsub.subscribe(cls.channel)
         while True:
             for item in pubsub.listen():
-                data = item['data']
-                socketio.emit(cls.msg_name,
-                      {'data': data},
-                      namespace=cls.namespace)
+                data = item.get('data')
+                if isinstance(data, str):
+                    pk = data.split('-')[-1]
+                    sentiment = session.query(TweetSentiment).get(int(pk))
+                    if sentiment:
+                        socketio.emit(cls.msg_name, sentiment.map_data,
+                                      namespace=cls.namespace)
+
+    @classmethod
+    def current_map_data(cls):
+        data = {}
+        for candidate in session.query(cls).all():
+            data[candidate.name] = {}
+            q = session.query(TweetSentiment)
+            sentiments = q.filter_by(candidate=candidate)
+            for sentiment in sentiments.all():
+                map_data = sentiment.map_data
+                data[map_data.pop('name')][map_data.pop('state')] = map_data
+        return data
 
     def __repr__(self):
         return "<PresidentialCandidate '{}'>".format(self.name)
 
 
-class TweetSentiment(ModelMixin, Base):
+class TweetSentiment(_SocketMixin, ModelMixin, Base):
     __tablename__ = "candidate_tweet_sentiment"
     pk = Column(Integer, primary_key=True)
     sentiment = Column(Float, default=0.0)
@@ -59,6 +73,19 @@ class TweetSentiment(ModelMixin, Base):
         self.sentiment = (self.sentiment + score) / self.total_tweets
         session.add(self)
         session.commit()
+
+    def publish(self):
+        msg = "{}-{}".format(self.__class__.__name__, self.pk)
+        redis.publish(self.channel, msg)
+
+    @property
+    def map_data(self):
+        return {
+            "name": self.candidate.name,
+            "state": self.state.value,
+            "sentiment": self.sentiment * 100.0,
+            "total_tweets": self.total_tweets,
+        }
 
     def __repr__(self):
         return "<TweetSentiment '{}': '{}'>".format(self.candidate.name,

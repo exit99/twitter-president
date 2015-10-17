@@ -51,6 +51,7 @@ def configure_static(app):
             'topojson/topojson.js',
             'datamaps/dist/datamaps.usa.min.js',
             'socket.io-client/dist/socket.io.min.js',
+            'lodash/lodash.js',
             assets.Bundle(
                 'coffee/maps.coffee',
                 'coffee/pres_socket.coffee',
