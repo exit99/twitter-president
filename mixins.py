@@ -1,17 +1,14 @@
-from sqlalchemy.orm import Query
-
-
-class CustomQuery(Query):
-    def get_or_create(self, **kwargs):
-        instance = self.filter_by(**kwargs).first()
-        if instance:
-            return instance
-        else:
-            instance = self._entities[0].type(**kwargs)
-            self.session.add(instance)
-            self.session.commit()
-            return instance
+from extensions import session
 
 
 class ModelMixin(object):
-    query_class = CustomQuery
+    @classmethod
+    def get_or_create(cls, **kwargs):
+        instance = session.query(cls).filter_by(**kwargs).first()
+        if instance:
+            return instance
+        else:
+            instance = cls(**kwargs)
+            session.add(instance)
+            session.commit()
+            return instance

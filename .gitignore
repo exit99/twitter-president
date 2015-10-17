@@ -60,3 +60,5 @@ target/
 .ropeproject
 
 local_settings.py
+
+.vagrant/

@@ -1,25 +1,23 @@
+import gevent
 from flask import Blueprint, current_app, render_template
 from extensions import socketio
 
 from constants import CANDIDATES
-from twitter import TwitterStream
+from twitter import stream_api_connection
 
 
 map_blueprint = Blueprint('map_blueprint', __name__,
                           template_folder="templates")
 
-thread = None
+
+stream = stream_api_connection()
+streams = []
 
 
 @map_blueprint.route('/')
 def index():
-    global thread
-    if thread is None:
-        with current_app.app_context():
-            thread = TwitterStream(
-                current_app, socketio=socketio
-            ).create_stream(CANDIDATES)
-            thread.start()
+    if not streams:
+        streams.append(stream.filter(track=[CANDIDATES], async=True))
     return render_template('index.html')
 
 

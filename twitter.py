@@ -23,14 +23,10 @@ from constants import CANDIDATES, STATES
 from models import PresidentialCandidate
 
 
-class StdOutListener(StreamListener):
+class Listener(StreamListener):
     def __init__(self, *args, **kwargs):
-        print kwargs
-        self.app = kwargs.pop('app')
-        self.keyword = kwargs.pop('keyword')
-        self.socketio = kwargs.pop('socketio', None)
-        StdOutListener.configure_logging()
-        return super(StdOutListener, self).__init__(self, *args, **kwargs)
+        Listener.configure_logging()
+        return super(Listener, self).__init__(self, *args, **kwargs)
 
     def on_error(self, status):
         logging.warning('{}: Twitter API Failure - {}'.format(
@@ -41,47 +37,16 @@ class StdOutListener(StreamListener):
     def on_data(self, data):
         """Continues grabbing tweets as long as this returns True."""
         tweet = Tweet(json.loads(data))
+        print tweet
         if tweet.is_relevant:
             tweet.log_for_audit()
-            with self.app.app_context():
-                # self.socketio.emit('tweet', {1:'Sweet'}, namespace="/test")
-                tweet.save()
+            tweet.save()
         return True
 
     @staticmethod
     def configure_logging():
         logging.basicConfig(filename=local_settings.LOGGING_FILE,
                             level=logging.INFO)
-
-
-class TwitterStream(object):
-    def __init__(self, app, socketio=None):
-        self.app = app
-        self.socketio = socketio
-
-    def create_stream(self, keywords):
-        return threading.Thread(target=self.keyword_stream, args=(keywords,))
-
-    def keyword_stream(self, keywords):
-        if not isinstance(keywords, list):
-            keywords = [keywords]
-        stream = self.stream_api_connection(keywords)
-        stream.filter(track=keywords)
-
-    def stream_api_connection(self, keyword):
-        """Handle Twitter authetification and the connection to Streaming API."""
-        access_token = local_settings.TWITTER_ACCESS_TOKEN
-        access_token_secret = local_settings.TWITTER_ACCESS_TOKEN_SECRET
-        consumer_key = local_settings.TWITTER_CONSUMER_KEY
-        consumer_secret = local_settings.TWITTER_CONSUMER_KEY_SECRET
-
-        print self.app, "IN TS"
-        l = StdOutListener(app=self.app, keyword=keyword,
-                           socketio=self.socketio)
-        auth = OAuthHandler(consumer_key, consumer_secret)
-        auth.set_access_token(access_token, access_token_secret)
-        stream = Stream(auth, l)
-        return stream
 
 
 class Tweet(object):
@@ -112,7 +77,7 @@ class Tweet(object):
 
     def save(self):
         for candidate in self.candidates:
-            pc = PresidentialCandidate.query.get_or_create(name=candidate)
+            pc = PresidentialCandidate.get_or_create(name=candidate)
             pc.update_sentiment_score(unicode(self.state), self.sentiment_score)
         print "success"
 
@@ -135,7 +100,7 @@ class Tweet(object):
             if self.full_name:
                 user_state = self.full_name.split(', ')[-1]
             if not user_state:
-                location = self.user.get('location', "").lower()
+                location = (self.user.get('location') or "").lower()
                 for state, abbr in STATES.iteritems():
                     if state.lower() in location or abbr.lower() in location:
                         user_state = abbr
@@ -148,3 +113,28 @@ class Tweet(object):
         if randint(0, 20) == 1:  # 5% chance.
             logging.info(self.state, self.sentiment_score,
                          self.candidates, self.text)
+
+
+def start_stream(track):
+    if not isinstance(track, list):
+        track = [track]
+    stream = stream_api_connection()
+    return stream.filter(track=track)
+
+
+def stream_api_connection():
+    """Handle Twitter authetification and the connection to Streaming API."""
+    access_token = local_settings.TWITTER_ACCESS_TOKEN
+    access_token_secret = local_settings.TWITTER_ACCESS_TOKEN_SECRET
+    consumer_key = local_settings.TWITTER_CONSUMER_KEY
+    consumer_secret = local_settings.TWITTER_CONSUMER_KEY_SECRET
+
+    l = Listener()
+    auth = OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_token_secret)
+    stream = Stream(auth, l)
+    return stream
+
+
+if __name__ == "__main__":
+    start_stream(CANDIDATES)

@@ -1,12 +1,10 @@
 import logging
 import os
 
-import indicoio
 from flask import Flask
 from flask.ext import assets
 
 import local_settings
-from constants import CANDIDATES
 
 
 def create_app(threads=True):
@@ -29,7 +27,6 @@ def configure_logging(app):
 def configure_extensions(app):
     from extensions import db, env, socketio
     db.init_app(app)
-    indicoio.config.api_key = app.config['INDICO_API_KEY']
     socketio.init_app(app)
     env.init_app(app)
     with app.app_context():
