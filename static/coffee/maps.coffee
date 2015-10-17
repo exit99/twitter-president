@@ -7,7 +7,7 @@ ready = ->
 
         minValue = 0
         maxValue = 100
-        paletteScale = d3.scale.linear().domain([minValue,maxValue]).range(["#EFEFFF","#02386F"])
+        paletteScale = d3.scale.linear().domain([minValue,maxValue]).range(["#FFEFEF","#6F0202"])
 
         for c, c_data of MAP_DATA
             for state, state_data of c_data
@@ -35,7 +35,11 @@ ready = ->
                             "<i>Total Tweets: " + data['total_tweets'],
                             '</div>'].join ''
 
+        $('.candidates').removeClass('selected')
+        $('#' + candidate.replace(' ', '-')).addClass('selected')
         return
+
+    window.render_map(_.keys(MAP_DATA)[0])
     
 
 $(document).ready(ready)

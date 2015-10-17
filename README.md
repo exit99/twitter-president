@@ -4,7 +4,9 @@ Live analysis of the positive and negative tweets for each presidential candidat
 TODO:
 
 [ ] Start running on server to start collecting data
-[ ] Make index.html look pretty.
-[ ] Show the total tweet percentage per candidate.
+[X] Make index.html look pretty.
+[ ] Fix for mobile.
+[ ] Make sure live updates are noticable
+[ ] Show the total tweet percentage per candidate. (this requires react for the selecters)
 [ ] Show each individual condidates average sentiment.
 [ ] Show republican vs democrat sentiment

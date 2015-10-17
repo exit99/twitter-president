@@ -39,6 +39,7 @@ def configure_static(app):
     from extensions import env
     env.init_app(app)
     with app.app_context():
+        env.config['less_bin'] = app.config["LESS_BIN"]
         env.load_path = [
             os.path.join(os.path.dirname(__file__), 'bower_components'),
             os.path.join(os.path.dirname(__file__), 'static'),
@@ -52,12 +53,26 @@ def configure_static(app):
             'datamaps/dist/datamaps.usa.min.js',
             'socket.io-client/dist/socket.io.min.js',
             'lodash/lodash.js',
+            'js/bootstrap.min.js',
             assets.Bundle(
                 'coffee/maps.coffee',
                 'coffee/pres_socket.coffee',
                 filters=['coffeescript']
             ),
             output='js_all.js'
+        )
+    )
+    env.register(
+        'css_all',
+        assets.Bundle(
+            'css/bootstrap.min.css',
+            assets.Bundle(
+                'less/variables.less',
+                'less/mixins.less',
+                'less/freelancer.less',
+                filters=['less']
+            ),
+            output='css_all.css'
         )
     )
 
