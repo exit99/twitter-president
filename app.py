@@ -41,6 +41,7 @@ def configure_static(app):
     with app.app_context():
         env.load_path = [
             os.path.join(os.path.dirname(__file__), 'bower_components'),
+            os.path.join(os.path.dirname(__file__), 'static'),
         ]
     env.register(
         'js_all',
@@ -49,9 +50,9 @@ def configure_static(app):
             'd3/d3.min.js',
             'topojson/topojson.js',
             'datamaps/dist/datamaps.usa.min.js',
+            'socket.io-client/dist/socket.io.min.js',
             assets.Bundle(
-                'coffee/map.coffee',
-                'coffee/sockets.coffee',
+                'coffee/maps.coffee',
                 'coffee/pres_socket.coffee',
                 filters=['coffeescript']
             ),
