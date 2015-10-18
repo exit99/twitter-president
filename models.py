@@ -39,7 +39,6 @@ class PresidentialCandidate(_SocketMixin, ModelMixin, Base):
                         'sentiment': sentiment,
                         'total_tweets': total_tweets,
                     }
-                    print "EMIT: {}".format(data)
                     socketio.emit(cls.msg_name, data, namespace=cls.namespace)
 
     @classmethod

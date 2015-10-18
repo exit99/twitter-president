@@ -8,4 +8,5 @@ TODO:
 [ ] Fix for mobile.
 [X] Make sure live updates are noticable
 [X] Show each individual condidates average sentiment.
-[ ] Add about and contact info.
+[X] Add about and contact info.
+[ ] Add a legend
