@@ -1,45 +1,135 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-    <title>Flask-SocketIO Test</title>
 
-    <style>
-        #map-container {
-            float: left;
-            width: 50%;
-            height: 500px;
-        }
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-        #candidate-table {
-            float: right;
-        }
-    </style>
+    <title>Kazanski - Poll</title>
+
+    {% assets "css_all" %}
+        <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">
+    {% endassets %}
+
+    {% assets "js_all" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+    <!-- Custom Fonts -->
+    <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
 
     <script type="text/javascript" charset="utf-8">
         MSG_NAME = "{{ msg_name }}";
         NAMESPACE = "{{ namespace }}";
         MAP_DATA = {{ map_data|safe }};
     </script>
-
-    {% assets "css_all" %}
-        <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">
-    {% endassets %}
-
-
-    {% assets "js_all" %}
-        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-    {% endassets %}
 </head>
-<body>
-    <div id="map-container"></div>
-    <table id="candidate-table">
-        {% for candidate in candidates %}
-            <tr>
-                <td><a onclick="window.render_map('{{ candidate }}')" href="#" id="{{ candidate }}">{{ candidate }}</a></td>
-            </tr>
-        {% endfor %}
-    </table>
-            
-    <div id="log">BOO</div>
+
+<body id="page-top" class="index">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#page-top">Kazanski Poll</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    <li class="page-scroll">
+                        <a href="#about">About</a>
+                    </li>
+                    <li class="page-scroll">
+                        <a href="#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9">
+                    <h2 id="candidate-name"></h2>
+                    <div id="map-container"></div>
+                </div>
+                <div class="col-lg-3">
+                    <!-- candidate-container is the React target. -->
+                    <div id="candidate-container"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Footer -->
+    <footer class="text-center">
+        <div class="footer-above">
+            <div class="container">
+                <div class="row">
+                    <div class="footer-col col-md-12">
+                        <a name="about"></a>
+                        <h3>About</h3>
+                        <p>The <strong>Kazanski Poll</strong> is a realtime opinion mining suite that detects the overall sentiment of twitter users from every state in the USA.<br>The sofware analyzes tweets in realtime looking for mentions of the current predidential candidates.<br>
+                        When a match is detected the tweet is analyzed using state-of-the-art <a href="https://en.wikipedia.org/wiki/Sentiment_analysis" target="_blank">sentiment analysis</a> algorithms.<br>
+                        The software ranks the overall sentiment of the tweet from 0 - 100 (0 being completely negative, 100 being completely positive) and detects the state where that user is located.<br>
+                        The overall sentiment for each state is then calculated by taking the mathematical average of all tweet's sentiments from that state.<br>
+                        A candidates overall national sentiment is also calculated by multiplying the average sentiment of each state by that state's number of tweets,<br>
+                        then the sums are added together and divided by the total number of tweets for that candidate.  This produces the overall national sentiment towards a particular candidate.<br>
+                        By observing the highest sentiment in a particular state as well as the number of tweets one may accurately predict who will win elections in each of the states.</p>
+
+                        <a name="contact"></a>
+                        <h3 id="contact">Contact</h3>
+                        <p>Have questions? Need a custom realtime analytics solution?  Want to make this poll better?</p>
+                        <p>Email: <strong>Kazco89@gmail.com</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-below">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        Copyright &copy; Zachary Kazanski 2015
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
+    <div class="scroll-top page-scroll visible-xs visible-sm">
+        <a class="btn btn-primary" href="#page-top">
+            <i class="fa fa-chevron-up"></i>
+        </a>
+    </div>
+
 </body>
+
 </html>

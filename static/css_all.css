@@ -440,3 +440,10 @@ footer .footer-below {
 .hoverinfo span {
   padding: 10px;
 }
+footer h3,
+footer p {
+  text-align: left;
+}
+footer p {
+  font-size: 14px;
+}

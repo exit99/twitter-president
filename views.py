@@ -28,7 +28,7 @@ def index():
         'map_data': json.dumps(PresidentialCandidate.current_map_data()),
         'candidates': CANDIDATES
     }
-    return render_template('index2.html', **ctx)
+    return render_template('index.html', **ctx)
 
 
 @socketio.on('my event', namespace=PresidentialCandidate.namespace)

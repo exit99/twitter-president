@@ -125,16 +125,14 @@ ready = ->
         makeCandidates: ->
             candidates = []
             for candidate, data of @state.map_data
-                active_states = 0
                 total_tweets = 0
                 sentiment = 0
                 for state, state_data of data
-                    active_states++
                     total_tweets += state_data.total_tweets
-                    sentiment += state_data.sentiment
+                    sentiment += (state_data.sentiment * state_data.total_tweets)
                 props = {
                     candidate: candidate
-                    sentiment: _.round sentiment / active_states
+                    sentiment: _.round sentiment / total_tweets
                     totalTweets: total_tweets
                 }
                 candidates.push React.createElement(Candidate, props)

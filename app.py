@@ -71,7 +71,7 @@ def configure_static(app):
             assets.Bundle(
                 'less/variables.less',
                 'less/mixins.less',
-                'less/freelancer.less',
+                'less/candidates.less',
                 filters=['less']
             ),
             output='css_all.css'

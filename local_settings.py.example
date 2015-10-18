@@ -1,3 +1,5 @@
+SECRET_KEY = ""
+
 TWITTER_ACCESS_TOKEN = ""
 TWITTER_ACCESS_TOKEN_SECRET  = ""
 TWITTER_CONSUMER_KEY  = ""
@@ -6,10 +8,12 @@ INDICO_API_KEY = ""
 
 SQLALCHEMY_DATABASE_URI = '{}://{}:{}@{}/{}'.format(
     'mysql+pymysql',
-    'root',
-    'root',
-    '33.33.33.1',
-    'twitter_campaign'
+    'USER',
+    'PASSWORD',
+    'HOST',
+    'DB'
 )
 
 LOGGING_FILE = "/tmp/twitter-president.log"
+
+LESS_BIN = "PATH_TO_LESSC"

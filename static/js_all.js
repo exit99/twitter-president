@@ -13006,24 +13006,22 @@ ready = function() {
       }, "Tweets")));
     },
     makeCandidates: function() {
-      var active_states, candidate, candidates, data, props, sentiment, state, state_data, total_tweets, _ref,
+      var candidate, candidates, data, props, sentiment, state, state_data, total_tweets, _ref,
         _this = this;
       candidates = [];
       _ref = this.state.map_data;
       for (candidate in _ref) {
         data = _ref[candidate];
-        active_states = 0;
         total_tweets = 0;
         sentiment = 0;
         for (state in data) {
           state_data = data[state];
-          active_states++;
           total_tweets += state_data.total_tweets;
-          sentiment += state_data.sentiment;
+          sentiment += state_data.sentiment * state_data.total_tweets;
         }
         props = {
           candidate: candidate,
-          sentiment: _.round(sentiment / active_states),
+          sentiment: _.round(sentiment / total_tweets),
           totalTweets: total_tweets
         };
         candidates.push(React.createElement(Candidate, props));
