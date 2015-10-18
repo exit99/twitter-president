@@ -32,11 +32,15 @@ class PresidentialCandidate(_SocketMixin, ModelMixin, Base):
             for item in pubsub.listen():
                 data = item.get('data')
                 if isinstance(data, str):
-                    pk = data.split('-')[-1]
-                    sentiment = session.query(TweetSentiment).get(int(pk))
-                    if sentiment:
-                        socketio.emit(cls.msg_name, sentiment.map_data,
-                                      namespace=cls.namespace)
+                    name, state, sentiment, total_tweets = data.split('-')
+                    data = {
+                        'name': name,
+                        'state': state,
+                        'sentiment': sentiment,
+                        'total_tweets': total_tweets,
+                    }
+                    print "EMIT: {}".format(data)
+                    socketio.emit(cls.msg_name, data, namespace=cls.namespace)
 
     @classmethod
     def current_map_data(cls):
@@ -75,19 +79,25 @@ class TweetSentiment(_SocketMixin, ModelMixin, Base):
         session.commit()
 
     def publish(self):
-        msg = "{}-{}".format(self.__class__.__name__, self.pk)
+        msg = "{}-{}-{}-{}".format(
+            self.candidate.name,
+            self.state.value,
+            self.sentiment,
+            self.total_tweets,
+        )
+        print "Publish: {}".format(msg)
         redis.publish(self.channel, msg)
 
     @property
     def sentiment(self):
-        return self._sentiment / self.total_tweets
+        return (self._sentiment / self.total_tweets) * 100
 
     @property
     def map_data(self):
         return {
             "name": self.candidate.name,
             "state": self.state.value,
-            "sentiment": self.sentiment * 100.0,
+            "sentiment": self.sentiment,
             "total_tweets": self.total_tweets,
         }
 

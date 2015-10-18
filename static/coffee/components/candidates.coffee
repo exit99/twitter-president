@@ -50,6 +50,13 @@ ready = ->
 
         getInitialState: ->
             sort_by: "totalTweets"
+            map_data: @props.mapData
+
+        componentDidMount: ->
+            @props.socket.on(@props.msgName, @update)
+
+        update: (msg) ->
+            @setState map_data: @props.updateMapData(msg)
 
         sortBy: (e) ->
             @setState sort_by: e.target.id
@@ -89,7 +96,7 @@ ready = ->
 
         makeCandidates: ->
             candidates = []
-            for candidate, data of @props.mapData
+            for candidate, data of @state.map_data
                 active_states = 0
                 total_tweets = 0
                 sentiment = 0
@@ -119,11 +126,16 @@ ready = ->
                 @makeCandidates()
             )
 
-    render_candidates = ->
+    window.render_candidates = ->
         container = document.getElementById 'candidate-container'
-        React.render React.createElement(CandidateList, { mapData: MAP_DATA }), container
+        React.render(React.createElement(CandidateList, {
+            mapData: MAP_DATA
+            socket: window.socket
+            msgName: MSG_NAME
+            updateMapData: window.updateMapData
+        }), container)
 
-    render_candidates()
+    window.render_candidates()
     window.render_map(window.initial_candidate)
 
 $(document).ready(ready)

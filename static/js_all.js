@@ -12895,18 +12895,17 @@ $(document).ready(ready);
 $(document).on('page:load', ready);
 
 ready = function() {
-  var socket;
-  socket = io.connect('http://' + document.domain + ':' + location.port + NAMESPACE);
-  socket.on('connect', function() {});
-  return socket.on(MSG_NAME, function(msg) {
-    MAP_DATA[msg.name][msg.state]["sentiment"] = msg.sentiment;
-    MAP_DATA[msg.name][msg.state]["total_tweets"] = msg.total_tweets;
+  window.updateMapData = function(msg) {
+    MAP_DATA[msg.name][msg.state]["sentiment"] = parseFloat(msg.sentiment);
+    MAP_DATA[msg.name][msg.state]["total_tweets"] = parseInt(msg.total_tweets);
     if (window.current_candidate === msg.name) {
       window.render_map(msg.name);
     }
-    $('#log').append('<br>Received #' + msg.sentiment + ': ' + msg.name);
-    return console.log("HERE");
-  });
+    return MAP_DATA;
+  };
+  window.socket = io.connect('http://' + document.domain + ':' + location.port + NAMESPACE);
+  window.socket.on('connect', function() {});
+  return window.socket.on(MSG_NAME, window.updateMapData);
 };
 
 $(document).ready(ready);
@@ -12914,7 +12913,7 @@ $(document).ready(ready);
 $(document).on('page:load', ready);
 
 ready = function() {
-  var Candidate, CandidateList, render_candidates;
+  var Candidate, CandidateList;
   Candidate = React.createClass({
     displayName: "Candidate",
     renderMap: function() {
@@ -12939,8 +12938,17 @@ ready = function() {
     displayName: "Candidate List",
     getInitialState: function() {
       return {
-        sort_by: "totalTweets"
+        sort_by: "totalTweets",
+        map_data: this.props.mapData
       };
+    },
+    componentDidMount: function() {
+      return this.props.socket.on(this.props.msgName, this.update);
+    },
+    update: function(msg) {
+      return this.setState({
+        map_data: this.props.updateMapData(msg)
+      });
     },
     sortBy: function(e) {
       return this.setState({
@@ -12971,7 +12979,7 @@ ready = function() {
       var active_states, candidate, candidates, data, props, sentiment, state, state_data, total_tweets, _ref,
         _this = this;
       candidates = [];
-      _ref = this.props.mapData;
+      _ref = this.state.map_data;
       for (candidate in _ref) {
         data = _ref[candidate];
         active_states = 0;
@@ -13003,14 +13011,17 @@ ready = function() {
       return React.createElement("div", null, this.makeHeader(), this.makeCandidates());
     }
   });
-  render_candidates = function() {
+  window.render_candidates = function() {
     var container;
     container = document.getElementById('candidate-container');
     return React.render(React.createElement(CandidateList, {
-      mapData: MAP_DATA
+      mapData: MAP_DATA,
+      socket: window.socket,
+      msgName: MSG_NAME,
+      updateMapData: window.updateMapData
     }), container);
   };
-  render_candidates();
+  window.render_candidates();
   return window.render_map(window.initial_candidate);
 };
 
