@@ -54,9 +54,11 @@ def configure_static(app):
             'socket.io-client/dist/socket.io.min.js',
             'lodash/lodash.js',
             'js/bootstrap.min.js',
+            'react/react.min.js',
             assets.Bundle(
                 'coffee/maps.coffee',
                 'coffee/pres_socket.coffee',
+                'coffee/components/candidates.coffee',
                 filters=['coffeescript']
             ),
             output='js_all.js'

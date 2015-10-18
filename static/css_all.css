@@ -409,6 +409,10 @@ footer .footer-below {
   text-align: left;
   color: #2C3E50;
 }
+.candidates-header p:hover {
+  opacity: .80;
+  cursor: pointer;
+}
 .candidates {
   font-size: 12px;
   background-color: #797575;
