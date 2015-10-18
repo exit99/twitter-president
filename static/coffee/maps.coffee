@@ -5,6 +5,8 @@ ready = ->
         # Remove old map from DOM.
         $('#map-container').replaceWith('<div id="map-container"></div>')
 
+        $('#candidate-name').text(candidate)
+
         minValue = 0
         maxValue = 100
         paletteScale = d3.scale.linear().domain([minValue,maxValue]).range(["#FFEFEF","#6F0202"])
@@ -28,12 +30,19 @@ ready = ->
                 highlightBorderColor: '#B7B7B7'
                 popupTemplate: (geo, data) ->
                     data = MAP_DATA[candidate][geo.id]
-                    return ['<div class="hoverinfo"><strong>',
-                            geo.properties.name + " sentiment",
-                            ': ' + _.round(data['sentiment']) + "/100",
-                            '</strong><br>',
-                            "<i>Total Tweets: " + data['total_tweets'],
-                            '</div>'].join ''
+                    if not data
+                        sentiment = "N/A"
+                        total_tweets = 0
+                    else
+                        sentiment = _.round(data['sentiment']) + "/100"
+                        total_tweets = data['total_tweets']
+                    element = [
+                        '<div class="hoverinfo">',
+                        '<h6>' + geo.properties.name + '</h6>',
+                        '<span>Sentiment: <strong>' + sentiment + '</strong></span><br>',
+                        '<span>Total Tweets: <strong>' + total_tweets + '</strong></span><br>',
+                        '</div>'].join ''
+                    return element
 
         $('.candidates').removeClass('selected')
         $('#' + candidate.replace(' ', '-')).addClass('selected')

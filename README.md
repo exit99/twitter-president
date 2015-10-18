@@ -6,7 +6,6 @@ TODO:
 [ ] Start running on server to start collecting data
 [X] Make index.html look pretty.
 [ ] Fix for mobile.
-[ ] Make sure live updates are noticable
-[ ] Show the total tweet percentage per candidate. (this requires react for the selecters)
-[ ] Show each individual condidates average sentiment.
-[ ] Show republican vs democrat sentiment
+[X] Make sure live updates are noticable
+[X] Show each individual condidates average sentiment.
+[ ] Add about and contact info.

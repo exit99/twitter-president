@@ -395,8 +395,8 @@ footer .footer-below {
   height: 450px;
   width: 110%;
   position: relative;
-  top: 20%;
-  transform: translateY(20%);
+  top: 7%;
+  transform: translateY(7%);
 }
 .candidates-header {
   border-bottom: 1px solid grey;
@@ -431,9 +431,12 @@ footer .footer-below {
 .candidates:hover {
   opacity: .8;
 }
-.facial {
-  width: 40px;
-  border-radius: 150px;
-  -webkit-border-radius: 150px;
-  -moz-border-radius: 150px;
+#candidate-name {
+  color: #2C3E50;
+}
+.hoverinfo {
+  color: black;
+}
+.hoverinfo span {
+  padding: 10px;
 }

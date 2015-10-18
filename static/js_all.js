@@ -12854,6 +12854,7 @@ ready = function() {
     var c, c_data, map, maxValue, minValue, paletteScale, state, state_data;
     window.current_candidate = candidate;
     $('#map-container').replaceWith('<div id="map-container"></div>');
+    $('#candidate-name').text(candidate);
     minValue = 0;
     maxValue = 100;
     paletteScale = d3.scale.linear().domain([minValue, maxValue]).range(["#FFEFEF", "#6F0202"]);
@@ -12879,8 +12880,17 @@ ready = function() {
         },
         highlightBorderColor: '#B7B7B7',
         popupTemplate: function(geo, data) {
+          var element, sentiment, total_tweets;
           data = MAP_DATA[candidate][geo.id];
-          return ['<div class="hoverinfo"><strong>', geo.properties.name + " sentiment", ': ' + _.round(data['sentiment']) + "/100", '</strong><br>', "<i>Total Tweets: " + data['total_tweets'], '</div>'].join('');
+          if (!data) {
+            sentiment = "N/A";
+            total_tweets = 0;
+          } else {
+            sentiment = _.round(data['sentiment']) + "/100";
+            total_tweets = data['total_tweets'];
+          }
+          element = ['<div class="hoverinfo">', '<h6>' + geo.properties.name + '</h6>', '<span>Sentiment: <strong>' + sentiment + '</strong></span><br>', '<span>Total Tweets: <strong>' + total_tweets + '</strong></span><br>', '</div>'].join('');
+          return element;
         }
       }
     });
@@ -12919,6 +12929,26 @@ ready = function() {
     renderMap: function() {
       return window.render_map(this.props.candidate);
     },
+    abbrNum: function(number, decPlaces) {
+      var abbrev, i, size;
+      Math.pow(10, decPlaces);
+      abbrev = ['k', 'm', 'b', 't'];
+      i = abbrev.length - 1;
+      while (i >= 0) {
+        size = Math.pow(10, (i + 1) * 3);
+        if (size <= number) {
+          number = Math.round(number * decPlaces / size) / decPlaces;
+          if (number === 1000 && i < abbrev.length - 1) {
+            number = 1;
+            i++;
+          }
+          number += abbrev[i];
+          break;
+        }
+        i--;
+      }
+      return number;
+    },
     render: function() {
       return React.createElement("div", {
         className: "row candidates",
@@ -12931,7 +12961,7 @@ ready = function() {
         className: "col-lg-3 stats"
       }, React.createElement("p", null, this.props.sentiment + "/100")), React.createElement("div", {
         className: "col-lg-3 stats"
-      }, React.createElement("p", null, this.props.totalTweets)));
+      }, React.createElement("p", null, this.abbrNum(this.props.totalTweets, 2))));
     }
   });
   CandidateList = React.createClass({
