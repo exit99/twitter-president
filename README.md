@@ -5,7 +5,7 @@ TODO For Version 0.0.0:
 
 [ ] Start running on server to start collecting data
 [X] Make index.html look pretty.
-[ ] Fix for mobile.
+[X] Fix for mobile.
 [X] Make sure live updates are noticable
 [X] Show each individual condidates average sentiment.
 [X] Add about and contact info.
