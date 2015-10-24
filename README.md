@@ -13,6 +13,7 @@ TODO For Version 0.0.0:
 [X] Add the most recent tweet section to show that it is actually live.
 [X] Favicon
 [ ] Testing w/ coverage
+[ ] Write a more interesting about page
 
 
 Version 2.0.0:
