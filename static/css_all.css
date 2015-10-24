@@ -447,3 +447,31 @@ footer p {
 footer p {
   font-size: 14px;
 }
+.last-tweet {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  background-color: red;
+}
+.legend-table {
+  margin-bottom: -25px;
+}
+.legend-table tr:last-child td {
+  padding: 0 5px 0 5px;
+}
+.legend-table tr td:last-child {
+  text-align: right;
+}
+.legend {
+  margin: 20px 0 -20px 0;
+  width: 300px;
+  height: 20px;
+  background: -webkit-linear-gradient(left, #FFEFEF, #6F0202);
+  /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(right, #FFEFEF, #6F0202);
+  /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(right, #FFEFEF, #6F0202);
+  /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to right, #FFEFEF, #6F0202);
+  /* Standard syntax */
+}
