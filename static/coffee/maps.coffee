@@ -48,6 +48,12 @@ ready = ->
         $('#' + candidate.replace(' ', '-')).addClass('selected')
 
     window.render_map(_.keys(MAP_DATA)[0])
+
+    # The render allows the new css sizes to apply to the element.
+    $(window).resize ->
+        console.log ("RESIZE")
+        window.render_map(window.current_candidate)
+    
     
 
 $(document).ready(ready)

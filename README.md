@@ -9,9 +9,9 @@ TODO For Version 0.0.0:
 [X] Make sure live updates are noticable
 [X] Show each individual condidates average sentiment.
 [X] Add about and contact info.
-[ ] Add a legend
-[ ] Add the most recent tweet section to show that it is actually live.
-[ ] Favicon
+[X] Add a legend
+[X] Add the most recent tweet section to show that it is actually live.
+[X] Favicon
 [ ] Testing w/ coverage
 
 

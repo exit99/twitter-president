@@ -12921,7 +12921,11 @@ ready = function() {
     $('.candidates').removeClass('selected');
     return $('#' + candidate.replace(' ', '-')).addClass('selected');
   };
-  return window.render_map(_.keys(MAP_DATA)[0]);
+  window.render_map(_.keys(MAP_DATA)[0]);
+  return $(window).resize(function() {
+    console.log("RESIZE");
+    return window.render_map(window.current_candidate);
+  });
 };
 
 $(document).ready(ready);
@@ -12987,11 +12991,11 @@ ready = function() {
         href: "#",
         id: this.props.candidate.replace(' ', '-')
       }, React.createElement("div", {
-        className: "col-lg-6 name"
+        className: "col-xs-6 name"
       }, React.createElement("p", null, _.startCase(this.props.candidate))), React.createElement("div", {
-        className: "col-lg-3 stats"
+        className: "col-xs-3 stats"
       }, React.createElement("p", null, this.props.sentiment + "/100")), React.createElement("div", {
-        className: "col-lg-3 stats"
+        className: "col-xs-3 stats"
       }, React.createElement("p", null, this.abbrNum(this.props.totalTweets, 2))));
     }
   });
@@ -13020,17 +13024,17 @@ ready = function() {
       return React.createElement("div", {
         "className": "row candidates-header"
       }, React.createElement("div", {
-        "className": "col-lg-6 name"
+        "className": "col-xs-6 name"
       }, React.createElement("p", {
         id: "candidate",
         onClick: this.sortBy
       }, "Candidate")), React.createElement("div", {
-        "className": "col-lg-3 stats"
+        "className": "col-xs-3 stats"
       }, React.createElement("p", {
         id: "sentiment",
         onClick: this.sortBy
       }, "National")), React.createElement("div", {
-        "className": "col-lg-3 stats"
+        "className": "col-xs-3 stats"
       }, React.createElement("p", {
         id: "totalTweets",
         onClick: this.sortBy

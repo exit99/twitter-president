@@ -69,6 +69,7 @@ def configure_static(app):
         'css_all',
         assets.Bundle(
             'css/bootstrap.min.css',
+            'css/font-awesome.min.css',
             assets.Bundle(
                 'less/variables.less',
                 'less/mixins.less',

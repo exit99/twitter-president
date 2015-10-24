@@ -45,7 +45,7 @@ ready = ->
                 },
                 React.createElement(
                     "div",
-                    {className: "col-lg-6 name"},
+                    {className: "col-xs-6 name"},
                     React.createElement(
                         "p",
                         null,
@@ -54,7 +54,7 @@ ready = ->
                 ),
                 React.createElement(
                     "div",
-                    {className: "col-lg-3 stats"},
+                    {className: "col-xs-3 stats"},
                     React.createElement(
                         "p",
                         null,
@@ -63,7 +63,7 @@ ready = ->
                 ),
                 React.createElement(
                     "div",
-                    {className: "col-lg-3 stats"},
+                    {className: "col-xs-3 stats"},
                     React.createElement(
                         "p",
                         null,
@@ -95,7 +95,7 @@ ready = ->
                 { "className": "row candidates-header" },
                 React.createElement(
                     "div",
-                    { "className": "col-lg-6 name" },
+                    { "className": "col-xs-6 name" },
                     React.createElement(
                         "p",
                         { id: "candidate", onClick: @sortBy },
@@ -104,7 +104,7 @@ ready = ->
                 ),
                 React.createElement(
                     "div",
-                    { "className": "col-lg-3 stats" },
+                    { "className": "col-xs-3 stats" },
                     React.createElement(
                         "p",
                         { id: "sentiment", onClick: @sortBy },
@@ -113,7 +113,7 @@ ready = ->
                 ),
                 React.createElement(
                     "div",
-                    { "className": "col-lg-3 stats" },
+                    { "className": "col-xs-3 stats" },
                     React.createElement(
                         "p",
                         { id: "totalTweets", onClick: @sortBy },

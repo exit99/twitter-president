@@ -431,9 +431,8 @@ footer {
 }
 
 #map-container {
-    margin-left: -70px;
     height: 450px;
-    width: 110%;
+    width: 100%;
     position: relative;
     top: 7%;
     transform: translateY(7%);
@@ -541,4 +540,74 @@ footer {
     background: -o-linear-gradient(right, #FFEFEF, #6F0202); /* For Opera 11.1 to 12.0 */
     background: -moz-linear-gradient(right, #FFEFEF, #6F0202); /* For Firefox 3.6 to 15 */
     background: linear-gradient(to right, #FFEFEF , #6F0202); /* Standard syntax */
+}
+
+@media screen and (max-width: 1199px) {
+    .recent-tweet {
+        margin-top: 45px;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    #map-container {
+        margin-top: -40px;
+        top: 0%;
+        transform: translateY(0%);
+    }
+
+    .candidates-header {
+        margin-top: 40px;
+    }
+
+    .recent-tweet {
+        margin-top: -30px;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .recent-tweet {
+        .tweet-name, .tweet-state, .tweet-sentiment {
+            display: none;
+        }
+        .tweet-msg {
+            width: 100%;
+        }
+    }
+    .recent-tweet p {
+        font-size: 10px;
+    }
+}
+
+@media screen and (max-width: 575px) {
+    #map-container {
+        margin-top: -60px;
+    }
+
+    .candidates-header {
+        margin-top: 30px;
+    }
+
+    .recent-tweet {
+        margin-top: -60px;
+
+        .tweet-msg {
+            font-size: 10px;
+        }
+    }
+
+}
+
+@media screen and (max-width: 445px) {
+    #map-container {
+        margin-top: -80px;
+    }
+
+    .candidates-header {
+        margin-top: 30px;
+    }
+
+    .recent-tweet {
+        margin-top: -80px;
+    }
+
 }

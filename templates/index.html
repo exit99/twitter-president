@@ -9,7 +9,8 @@
     <meta name="description" content="">
     <meta name="author" content="Zachary Kazanski">
 
-    <title>Kazanski - Poll</title>
+    <title>Kazanski Poll</title>
+    <link rel="shortcut icon" href="/static/img/k.png" />
 
     {% assets "css_all" %}
         <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">
@@ -76,7 +77,7 @@
     <header>
         <div class="container">
             <div class="row">
-                <div class="col-lg-9">
+                <div class="col-md-9">
                     <h2 id="candidate-name"></h2>
                     <center>
                         <table class="legend-table">
@@ -90,18 +91,18 @@
                             </tr>
                         </table>
                     </center>
-                    <div id="map-container"></div>
+                    <center><div id="map-container"></div></center>
                     <div class="recent-tweet">
                         <h6>Most Recent Tweet</h6>
                        <div class="row">
-                            <div class="col-md-2 tweet-name"></div>
-                            <div class="col-md-1 tweet-state"></div>
-                            <div class="col-md-1 tweet-sentiment"></div>
-                            <div class="col-md-8 tweet-msg"></div>
+                            <div class="col-xs-2 tweet-name"></div>
+                            <div class="col-xs-1 tweet-state"></div>
+                            <div class="col-xs-1 tweet-sentiment"></div>
+                            <div class="col-xs-8 tweet-msg"></div>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-md-3">
                     <!-- candidate-container is the React target. -->
                     <div id="candidate-container"></div>
                 </div>
@@ -114,7 +115,7 @@
         <div class="footer-above">
             <div class="container">
                 <div class="row">
-                    <div class="footer-col col-md-12">
+                    <div class="footer-col col-xs-12">
                         <a name="about"></a>
                         <h3>About</h3>
                         <p>The <strong>Kazanski Poll</strong> is a realtime opinion mining suite that detects the overall sentiment of twitter users from every state in the USA.<br>The sofware analyzes tweets in realtime looking for mentions of the current predidential candidates.<br>
@@ -136,7 +137,7 @@
         <div class="footer-below">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-xs-12">
                         Copyright &copy; Zachary Kazanski 2015
                     </div>
                 </div>
@@ -147,7 +148,7 @@
     <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
     <div class="scroll-top page-scroll visible-xs visible-sm">
         <a class="btn btn-primary" href="#page-top">
-            <i class="fa fa-chevron-up"></i>
+            <center><i class="fa fa-arrow-up"></i></center>
         </a>
     </div>
 
