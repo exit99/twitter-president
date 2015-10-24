@@ -501,23 +501,36 @@ footer {
     }
 }
 
-.last-tweet {
+.recent-tweet {
+    margin-top: 80px;
     width: 100%;
-    position: fixed;
-    bottom: 0;
-    background-color: red;
+    font-size: 12px;
+    background-color: @brand-primary;
+
+    h6 {
+        padding: 5px;
+        background-color: white;
+        color: @brand-primary;
+    }
+
+    .row {
+        height: 44px;
+        padding: 0 10px 10px 10px;
+    }
 }
 
 .legend-table {
     margin-bottom: -25px;
-}
 
-.legend-table tr:last-child td {
-    padding: 0 5px 0 5px;
-}
+    tr:last-child td {
+        padding: 0 5px 0 5px;
+    }
 
-.legend-table tr td:last-child {
-    text-align: right;
+    tr td:last-child {
+        text-align: right;
+    }
+
+
 }
 
 .legend {

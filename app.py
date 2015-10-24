@@ -56,6 +56,7 @@ def configure_static(app):
             'js/bootstrap.min.js',
             'react/react.min.js',
             assets.Bundle(
+                'coffee/recent_tweet.coffee',
                 'coffee/maps.coffee',
                 'coffee/pres_socket.coffee',
                 'coffee/components/candidates.coffee',

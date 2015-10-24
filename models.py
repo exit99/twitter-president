@@ -1,3 +1,5 @@
+import re
+
 from sqlalchemy import Column, Integer, Float, ForeignKey, String
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy_utils.types.choice import ChoiceType
@@ -19,10 +21,13 @@ class PresidentialCandidate(_SocketMixin, ModelMixin, Base):
     pk = Column(Integer, primary_key=True)
     name = Column(String(120))
 
-    def update_sentiment_score(self, state, score):
+    def update_sentiment_score(self, state, score, msg=None):
         ts = TweetSentiment.get_or_create(candidate=self, state=state)
         ts.update_score(score)
-        ts.publish()
+        return ts
+
+    def publish(self, sentiment, msg=""):
+        sentiment.publish(msg)
 
     @classmethod
     def subscribe(cls):
@@ -32,12 +37,16 @@ class PresidentialCandidate(_SocketMixin, ModelMixin, Base):
             for item in pubsub.listen():
                 data = item.get('data')
                 if isinstance(data, str):
-                    name, state, sentiment, total_tweets = data.split('-')
+                    limter = len(re.findall('.*?-.*?-.*?-.*?-', data)[0])
+                    tweet_info = data[:limter - 1].split('-')
+                    name, state, sentiment, total_tweets = tweet_info
+                    msg = data[limter:]
                     data = {
                         'name': name,
                         'state': state,
                         'sentiment': sentiment,
                         'total_tweets': total_tweets,
+                        'msg': msg
                     }
                     socketio.emit(cls.msg_name, data, namespace=cls.namespace)
 
@@ -77,14 +86,14 @@ class TweetSentiment(_SocketMixin, ModelMixin, Base):
         session.add(self)
         session.commit()
 
-    def publish(self):
-        msg = "{}-{}-{}-{}".format(
+    def publish(self, tweet_msg=""):
+        msg = "{}-{}-{}-{}-{}".format(
             self.candidate.name,
             self.state.value,
             self.sentiment,
             self.total_tweets,
+            tweet_msg.encode('utf-8', "ignore"),
         )
-        print "Publish: {}".format(msg)
         redis.publish(self.channel, msg)
 
     @property

@@ -68,7 +68,10 @@ class Tweet(object):
         for candidate in self.candidates:
             if unicode(self.state) in STATES.values():
                 pc = PresidentialCandidate.get_or_create(name=candidate)
-                pc.update_sentiment_score(unicode(self.state), self.sentiment_score)
+                state = unicode(self.state),
+                score = self.sentiment_score
+                sentiment = pc.update_sentiment_score(state, score)
+                pc.publish(sentiment, self.text)
 
     @property
     def is_relevant(self):

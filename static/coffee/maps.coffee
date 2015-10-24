@@ -46,7 +46,6 @@ ready = ->
 
         $('.candidates').removeClass('selected')
         $('#' + candidate.replace(' ', '-')).addClass('selected')
-        return
 
     window.render_map(_.keys(MAP_DATA)[0])
     

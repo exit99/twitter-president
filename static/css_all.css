@@ -447,11 +447,20 @@ footer p {
 footer p {
   font-size: 14px;
 }
-.last-tweet {
+.recent-tweet {
+  margin-top: 80px;
   width: 100%;
-  position: fixed;
-  bottom: 0;
-  background-color: red;
+  font-size: 12px;
+  background-color: #2C3E50;
+}
+.recent-tweet h6 {
+  padding: 5px;
+  background-color: white;
+  color: #2C3E50;
+}
+.recent-tweet .row {
+  height: 44px;
+  padding: 0 10px 10px 10px;
 }
 .legend-table {
   margin-bottom: -25px;

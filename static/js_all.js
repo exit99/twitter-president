@@ -12850,6 +12850,30 @@ var E=C.value;E&&(s=E[1],c=m+i(E[0])+h+o(s,0),v+=u(s,c,n,r))}}else"object"===a&&
 var ready;
 
 ready = function() {
+  return window.render_recent_tweet = function(msg) {
+    var field, val, _i, _len, _ref, _results;
+    _ref = ['name', 'sentiment', 'state', 'msg'];
+    _results = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      field = _ref[_i];
+      val = msg[field];
+      if (field === "name") {
+        val = _.startCase(val);
+      }
+      if (field === "sentiment") {
+        val = _.round(val).toString() + "/100";
+      }
+      _results.push($(".recent-tweet .tweet-" + field).html(val));
+    }
+    return _results;
+  };
+};
+
+$(document).ready(ready);
+
+$(document).on('page:load', ready);
+
+ready = function() {
   window.render_map = function(candidate) {
     var c, c_data, map, maxValue, minValue, paletteScale, state, state_data;
     window.current_candidate = candidate;
@@ -12895,7 +12919,7 @@ ready = function() {
       }
     });
     $('.candidates').removeClass('selected');
-    $('#' + candidate.replace(' ', '-')).addClass('selected');
+    return $('#' + candidate.replace(' ', '-')).addClass('selected');
   };
   return window.render_map(_.keys(MAP_DATA)[0]);
 };
@@ -12917,6 +12941,7 @@ ready = function() {
     if (window.current_candidate === msg.name) {
       window.render_map(msg.name);
     }
+    window.render_recent_tweet(msg);
     return MAP_DATA;
   };
   window.socket = io.connect('http://' + document.domain + ':' + location.port + NAMESPACE);

@@ -8,6 +8,7 @@ ready = ->
         MAP_DATA[msg.name][msg.state]["total_tweets"] = parseInt(msg.total_tweets)
         if window.current_candidate == msg.name
             window.render_map(msg.name)
+        window.render_recent_tweet(msg)
         return MAP_DATA
 
 
