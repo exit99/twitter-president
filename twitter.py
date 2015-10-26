@@ -7,6 +7,7 @@ import indicoio
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
+import vaderSentiment
 
 import local_settings
 from constants import CANDIDATES, STATES
@@ -83,7 +84,8 @@ class Tweet(object):
 
     @property
     def sentiment_score(self):
-        return indicoio.sentiment(self.text)
+        sentiment = vaderSentiment(self.text)
+        return ((sentiment['pos'] - sentiment['neg']) + 1) / 2
 
     @property
     def state(self):

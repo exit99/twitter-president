@@ -38,3 +38,4 @@ tweepy==3.3.0
 tweetstream==1.1.1
 webassets==0.10.1
 wsgiref==0.1.2
+vaderSentiment==0.5
