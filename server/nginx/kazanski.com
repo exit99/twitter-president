@@ -1,6 +1,6 @@
 server {
-    server_tokens off;
-    server_name kazanski.com www.kazanski.com;
+    listen 80;
+    server_name upcoachme.com;
 
      location / {
          include uwsgi_params;
