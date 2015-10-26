@@ -3,11 +3,10 @@ import logging
 from datetime import datetime
 from random import randint
 
-import indicoio
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
-import vaderSentiment
+from vaderSentiment.vaderSentiment import sentiment as vaderSentiment
 
 import local_settings
 from constants import CANDIDATES, STATES
@@ -84,7 +83,7 @@ class Tweet(object):
 
     @property
     def sentiment_score(self):
-        sentiment = vaderSentiment(self.text)
+        sentiment = vaderSentiment(self.text.encode('utf-8', "ignore"))
         return ((sentiment['pos'] - sentiment['neg']) + 1) / 2
 
     @property
