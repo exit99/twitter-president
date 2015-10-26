@@ -1,8 +1,4 @@
-MAKE THIS README BETTER
-
-1. Symlink nginx file
 2. Symlink supervisor file
-3. Symlink supervisor file
 
-/etc/init/gunicorn.conf file
-
+`cd /etc/nginx/sites-enabled && ln -s /srv/www/kazanski/server/nginx/kazanski.com`
+`cp /srv/www/kazanski/server/gunicorn/kazanski.conf /etc/init/kazanski.conf`
