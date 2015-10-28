@@ -62,3 +62,6 @@ target/
 local_settings.py
 
 .vagrant/
+
+# Bower components
+bower_components

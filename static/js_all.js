@@ -12879,8 +12879,8 @@ ready = function() {
     window.current_candidate = candidate;
     $('#map-container').replaceWith('<div id="map-container"></div>');
     $('#candidate-name').text(candidate);
-    minValue = 0;
-    maxValue = 100;
+    minValue = 40;
+    maxValue = 60;
     paletteScale = d3.scale.linear().domain([minValue, maxValue]).range(["#FFEFEF", "#6F0202"]);
     for (c in MAP_DATA) {
       c_data = MAP_DATA[c];
