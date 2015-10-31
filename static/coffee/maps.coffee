@@ -7,8 +7,8 @@ ready = ->
 
         $('#candidate-name').text(candidate)
 
-        minValue = 40
-        maxValue = 60
+        minValue = 25
+        maxValue = 75
         paletteScale = d3.scale.linear().domain([minValue,maxValue]).range(["#FFEFEF","#6F0202"])
 
         for c, c_data of MAP_DATA

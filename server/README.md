@@ -1,21 +1,5 @@
-2. Symlink supervisor file
-
-`cd /etc/nginx/sites-enabled && ln -s /srv/www/kazanski/server/nginx/kazanski.com`
-`cp /srv/www/kazanski/server/gunicorn/kazanski.conf /etc/init/kazanski.conf`
-
-
-## For deployment
-
-do the above
-pip install reqs
-
-install bower components
-restart gunicorn
-restrart ngninx
-
-
-
-DONT commit the bower_component files.
+1. Symlink supervisor files in the supervisor folder
+2. `supervisorctl update`
 
 ## Server requirements
 
