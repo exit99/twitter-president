@@ -53,22 +53,18 @@ STATES = {
 
 ELECTION_CANDIDATES = {
     "republican": [
-        "jeb bush",
         "donald trump",
         "ben carson",
-        "ted cruz",
         "marco rubio",
+        "jeb bush",
         "carly fiorina",
-        "lindesey graham",
+        "ted cruz",
         "mike huckabee",
-        "rand paul",
-        "rick perry",
         "chris christie",
-        "rick santorum",
-        "scott walker",
+        "john kasich",
+        "rand paul",
     ],
     "democrat": [
-        "joe biden",
         "hillary clinton",
         "bernie sanders",
         "jim webb",
