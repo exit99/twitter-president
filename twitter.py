@@ -7,6 +7,7 @@ from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
 from textblob import TextBlob
+from vaderSentiment.vaderSentiment import sentiment as vaderSentiment
 
 import local_settings
 from constants import CANDIDATES, STATES
@@ -83,7 +84,17 @@ class Tweet(object):
 
     @property
     def sentiment_score(self):
-        return TextBlob(self.text).sentiment.polarity
+        blob = self._blob_score(self.text)
+        vader = self._vader_score(self.text)
+        avg = (blob + vader) / 2
+        return avg
+
+    def _blob_score(self, text):
+        return (TextBlob(text).sentiment.polarity + 1.0) / 2
+
+    def _vader_score(self, text):
+        vader = vaderSentiment(text.encode('utf-8', 'ignore'))
+        return (vader['pos'] - vader['neg'] + 1) / 2
 
     @property
     def state(self):

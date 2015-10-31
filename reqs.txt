@@ -39,3 +39,4 @@ webassets==0.10.1
 wsgiref==0.1.2
 gunicorn==18.0
 textblob==0.10.0
+vaderSentiment==0.5
