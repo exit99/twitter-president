@@ -72,7 +72,7 @@ class Tweet(object):
                 state = unicode(self.state),
                 score = self.sentiment_score
                 # Ignore nuetral tweets.
-                if score != .5 and score >= 0 and score <= 1:
+                if score != .5 and (score >= .55 or score <= .45):
                     sentiment = pc.update_sentiment_score(state, score)
                     pc.publish(sentiment, self.text)
 
