@@ -98,7 +98,7 @@ class TweetSentiment(_SocketMixin, ModelMixin, Base):
 
     @property
     def sentiment(self):
-        return (self._sentiment / self.total_tweets) * 100
+        return (float(self._sentiment) / float(self.total_tweets)) * float(100)
 
     @property
     def map_data(self):
