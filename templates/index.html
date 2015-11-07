@@ -118,17 +118,27 @@
                     <div class="footer-col col-xs-12">
                         <a name="about"></a>
                         <h3>About</h3>
-                        <p>The <strong>Kazanski Poll</strong> is a realtime opinion mining suite that detects the overall sentiment of twitter users from every state in the USA.<br>The sofware analyzes tweets in realtime looking for mentions of the current predidential candidates.<br>
-                        When a match is detected the tweet is analyzed using state-of-the-art <a href="https://en.wikipedia.org/wiki/Sentiment_analysis" target="_blank">sentiment analysis</a> algorithms.<br>
-                        The software ranks the overall sentiment of the tweet from 0 - 100 (0 being completely negative, 100 being completely positive) and detects the state where that user is located.<br>
-                        The overall sentiment for each state is then calculated by taking the mathematical average of all tweet's sentiments from that state.<br>
-                        A candidates overall national sentiment is also calculated by multiplying the average sentiment of each state by that state's number of tweets,<br>
-                        then the sums are added together and divided by the total number of tweets for that candidate.  This produces the overall national sentiment towards a particular candidate.<br>
-                        By observing the highest sentiment in a particular state as well as the number of tweets one may accurately predict who will win elections in each of the states.</p>
+                        <p>The <strong>Kazanski Poll</strong> is a realtime opinion mining suite that detects the overall sentiment of twitter users from every state in the USA.   It is currently in BETA where I am testing the accuracy of our sentiment algorithm and testing the reliability of the twitter streaming API.
+                        Currently, I am using a combination of the  <a href="https://github.com/cjhutto/vaderSentiment">vaderSentiment</a> and the <a href="https://textblob.readthedocs.org/en/dev/">TextBlob</a> packages.  For the next test I will use a <a href="http://www.github.com/Kazanz/sasa-tool">fork of Google's Sasa-tool</a>
+                        <br><br>
+                        The sofware combrises of two micro-applications: The front end web service built in <a href="http://flask.pocoo.org/">Flask</a> and the sentiment analysis application written python.  The ALPHA version originally used a combination of <a href="http://redis.io/topics/pubsub">redis' pubsub</a> feature and websockets via <a href="http://socket.io/">socket.io</a> to communicate between the sites two seperate pieces. I have opted against continuing the feature as the only practical purpose was displaying the most recent tweet.  This small feature didn't justifying the use, so in the current version every page load will load the new data.<br>
+                        The twitter app uses Twitter's streaming API to look at tweets about presidential candidates. 
+                        When a match is detected the tweet is analyzed using the <a href="https://en.wikipedia.org/wiki/Sentiment_analysis" target="_blank">sentiment analysis</a> algorithms mentioned above ranking overall sentiment of the tweet from 0 - 100 (0 being completely negative, 100 being completely positive) and detects the state where that user is located.
+                        The overall sentiment for a state is then calculated by taking the mathematical average of all tweet's sentiments from that state.
+                        A candidates overall national sentiment is also calculated by multiplying the average sentiment of each state by that state's number of tweets
+                        then the sums are added together and divided by the total number of tweets for that candidate.  This produces the overall national sentiment towards a particular candidate.
+                        By observing the highest sentiment in a particular state as well as the number of tweets one may accurately predict who will win elections in each of the states.
+                        <br>
+                        <br>
+                        I will collect data for 1 Month (until November 24th) and will analyze the collected data to judge the shortcomings of the current sentiment algorithm.
+                        In future releases adjustments to the sentiment algorithm will be made.  I will have a the server take snapshots of each candidates sentiment in each state at the end of the day.  Using this data we will make line charts of the sentiment change for each candidate in each state over time. 
+                        Other modifications I am researching are migrating the web application to a non-python framework to help prepare for future async capabilities, and to filter statistically nuetral tweets (between approx. 45-55) into a new category that can be combined and removed from the chart.  
+                        I have two reasons for ignoring nuetral tweets: 1. Nuetral tweets are important to a candidate as they may represent a population that could be swayed either direction.  2. Tweets that are nuetral tend to be from news outlets or links to news outlets (Perhpas tweets buy major news outlets should be there own seperate category as well.) 
+                        </P>
 
                         <a name="contact"></a>
                         <h3 id="contact">Contact</h3>
-                        <p>Have questions? Need a custom realtime analytics solution?  Want to make this poll better?</p>
+                        <p>Have a suggestion on how to improve this application?</p>
                         <p>Email: <strong>Kazanski.Zachary@gmail.com</strong></p>
                     </div>
                 </div>
