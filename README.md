@@ -22,8 +22,3 @@ Version 2.0.0:
 [ ] Each day at a midnight capture the final positions that day. (This db entry feeds the rest of the timelines below)
 [ ] Create a timeline of sentiment and tweets for each candidate overall on a graph
 [ ] Same as above but for each individual state for each candidate.
-
-
-FUTURE Products:
-
-Terrorwatch.  Polls for tweets about ISIS, flags accountst that have high positive sentiment for ISIS.

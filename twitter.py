@@ -70,11 +70,10 @@ class Tweet(object):
             if unicode(self.state) in STATES.values():
                 pc = PresidentialCandidate.get_or_create(name=candidate)
                 state = unicode(self.state),
-                score = self.sentiment_score
-                # Ignore nuetral tweets.
-                if score != .5 and (score >= .55 or score <= .45):
-                    sentiment = pc.update_sentiment_score(state, score)
-                    pc.publish(sentiment, self.text)
+                blob_score, vader_score = self.sentiment_score
+                sentiment = pc.update_sentiment_score(
+                    state, blob_score, vader_score)
+                #pc.publish(sentiment, self.text)
 
     @property
     def is_relevant(self):

@@ -21,9 +21,9 @@ class PresidentialCandidate(_SocketMixin, ModelMixin, Base):
     pk = Column(Integer, primary_key=True)
     name = Column(String(120))
 
-    def update_sentiment_score(self, state, score, msg=None):
+    def update_sentiment_score(self, state, blob_score, vader_score, msg=None):
         ts = TweetSentiment.get_or_create(candidate=self, state=state)
-        ts.update_score(score)
+        ts.update_score(blob_score, vader_score)
         return ts
 
     def publish(self, sentiment, msg=""):
@@ -70,6 +70,32 @@ class TweetSentiment(_SocketMixin, ModelMixin, Base):
     __tablename__ = "candidate_tweet_sentiment"
     pk = Column(Integer, primary_key=True)
     _sentiment = Column(Float, default=0.0)
+    blob_score_total = Column(Float, default=0.0)
+    vader_score_total = Column(Float, default=0.0)
+
+    blob_score_range_count_0 = Column(Integer, default=0)
+    blob_score_range_count_0 = Column(Integer, default=0)
+    blob_score_range_count_1_10 = Column(Integer, default=0)
+    blob_score_range_count_11_20 = Column(Integer, default=0)
+    blob_score_range_count_21_30 = Column(Integer, default=0)
+    blob_score_range_count_31_40 = Column(Integer, default=0)
+    blob_score_range_count_41_50 = Column(Integer, default=0)
+    blob_score_range_count_51_60 = Column(Integer, default=0)
+    blob_score_range_count_61_70 = Column(Integer, default=0)
+    blob_score_range_count_71_80 = Column(Integer, default=0)
+    blob_score_range_count_81_90 = Column(Integer, default=0)
+    blob_score_range_count_91_100 = Column(Integer, default=0)
+    vader_score_range_count_0_10 = Column(Integer, default=0)
+    vader_score_range_count_11_20 = Column(Integer, default=0)
+    vader_score_range_count_21_30 = Column(Integer, default=0)
+    vader_score_range_count_31_40 = Column(Integer, default=0)
+    vader_score_range_count_41_50 = Column(Integer, default=0)
+    vader_score_range_count_51_60 = Column(Integer, default=0)
+    vader_score_range_count_61_70 = Column(Integer, default=0)
+    vader_score_range_count_71_80 = Column(Integer, default=0)
+    vader_score_range_count_81_90 = Column(Integer, default=0)
+    vader_score_range_count_91_100 = Column(Integer, default=0)
+
     total_tweets = Column(Integer, default=0)
     state = Column(ChoiceType([(abbr, abbr) for abbr in STATES.values()]))
     _candidate_pk = Column('candidate_pk', Integer,
@@ -80,11 +106,30 @@ class TweetSentiment(_SocketMixin, ModelMixin, Base):
         backref=backref('sentiments', lazy='dynamic')
     )
 
-    def update_score(self, score):
+    def update_score(self, blob_score, vader_score):
+        #self._sentiment = self._sentiment + score
+
         self.total_tweets += 1
-        self._sentiment = self._sentiment + score
+        self.blob_score_total += blob_score
+        self.vader_score_total += vader_score
+        blob_range = "blob_score_range_count_{}".format(self._range(blob_score))
+        vader_range = "vader_score_range_count_{}".format(self._range(vader_score))
+        blob_count = getattr(self, blob_range)
+        setattr(self, blob_range, blob_count + 1)
+        vader_count = getattr(self, vader_range)
+        setattr(self, vader_range, vader_count + 1)
         session.add(self)
         session.commit()
+
+    def _range(self, score):
+        if score <= 0:
+            return "0"
+        elif score >= 100:
+            return "91_100"
+        for v in range(1, 100, 10):
+            if score < v:
+                return "{}_{}".format(v, v + 9)
+
 
     def publish(self, tweet_msg=""):
         msg = "{}-{}-{}-{}-{}".format(

@@ -46,7 +46,7 @@ def configure_static(app):
         ]
     env.register(
         'js_all',
-        assets.Bundle(
+        assets.bundle(
             'jquery/dist/jquery.min.js',
             'd3/d3.min.js',
             'topojson/topojson.js',
@@ -55,7 +55,7 @@ def configure_static(app):
             'lodash/lodash.js',
             'js/bootstrap.min.js',
             'react/react.min.js',
-            assets.Bundle(
+            assets.bundle(
                 'coffee/recent_tweet.coffee',
                 'coffee/maps.coffee',
                 'coffee/pres_socket.coffee',
@@ -67,10 +67,10 @@ def configure_static(app):
     )
     env.register(
         'css_all',
-        assets.Bundle(
+        assets.bundle(
             'css/bootstrap.min.css',
             'css/font-awesome.min.css',
-            assets.Bundle(
+            assets.bundle(
                 'less/variables.less',
                 'less/mixins.less',
                 'less/candidates.less',
