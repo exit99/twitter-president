@@ -3,6 +3,7 @@ import logging
 from datetime import datetime
 from random import randint
 
+from nltk.corpus import stopwords
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
@@ -12,6 +13,9 @@ from vaderSentiment.vaderSentiment import sentiment as vaderSentiment
 import local_settings
 from constants import CANDIDATES, STATES
 from models import PresidentialCandidate
+
+
+cachedStopWords = stopwords.words("english")
 
 
 class Listener(StreamListener):
@@ -61,18 +65,26 @@ class Tweet(object):
             setattr(self, field, data.get(field))
         for field in self.place_fields:
             setattr(self, field, (data.get('place') or {}).get(field))
-        self.candidates = [candidate for candidate in CANDIDATES
-                           if candidate.lower() in self.text.lower()]
+        if self.text:
+            self.candidates = [candidate for candidate in CANDIDATES
+                               if candidate.lower() in self.text.lower()]
+            self.text = ' '.join([word for word in self.text.split()
+                                  if word not in cachedStopWords])
         super(Tweet, self).__init__()
 
     def save(self):
+        # Don't do tweets talking about both.
+        if len(self.candidates) > 1 or not self.text or not self.state:
+            return
         for candidate in self.candidates:
             if unicode(self.state) in STATES.values():
                 pc = PresidentialCandidate.get_or_create(name=candidate)
-                state = unicode(self.state),
-                blob_score, vader_score = self.sentiment_score
+                state = unicode(self.state)
+                blob_score = self._blob_score(self.text)
+                vader_scores = self._vader_score(self.text)
+                #print(state, blob_score, vader_scores)
                 sentiment = pc.update_sentiment_score(
-                    state, blob_score, vader_score)
+                    state, blob_score, *vader_scores)
                 #pc.publish(sentiment, self.text)
 
     @property
@@ -95,7 +107,12 @@ class Tweet(object):
 
     def _vader_score(self, text):
         vader = vaderSentiment(text.encode('utf-8', 'ignore'))
-        return (vader['pos'] - vader['neg'] + 1) / 2
+        return map(lambda x: x * 100, (
+            vader['pos'],
+            vader['neg'],
+            vader['neu'],
+            (vader['compound'] + 1) / 2,  # Normalized.
+        ))
 
     @property
     def state(self):
@@ -115,8 +132,9 @@ class Tweet(object):
     def log_for_audit(self):
         """Randomly log so we can check sentiment score is accurate."""
         if randint(0, 20) == 1:  # 5% chance.
-            logging.info("{}, {}, {}".format(
-                self.state, self.sentiment_score, self.candidates, self.text)
+            logging.info("{}, {}, {}, {}".format(
+                self.state, self._blob_score(self.text),
+                self._vader_score(self.text), self.candidates, self.text)
             )
 
 

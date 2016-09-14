@@ -20,7 +20,7 @@ def create_app():
     app.config.from_object(local_settings)
     configure_logging(app)
     configure_extensions(app)
-    configure_static(app)
+    #configure_static(app)
     register_blueprints(app)
     return app
 

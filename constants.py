@@ -54,24 +54,17 @@ STATES = {
 ELECTION_CANDIDATES = {
     "republican": [
         "donald trump",
-        "ben carson",
-        "marco rubio",
-        "jeb bush",
-        "carly fiorina",
-        "ted cruz",
-        "mike huckabee",
-        "chris christie",
-        "john kasich",
-        "rand paul",
     ],
     "democrat": [
         "hillary clinton",
-        "bernie sanders",
-        "jim webb",
-        "lincoln chafee",
-        "martin o'malley"
     ],
-    "independent": [],
+    "libertarian": [
+        "gary johnson",
+    ],
+    "green party": [
+        "jill stein",
+    ],
+
 }
 CANDIDATES = [item for sublist in ELECTION_CANDIDATES.values() for item in sublist]
 PARTIES = [(party, party) for party in ELECTION_CANDIDATES.keys()]
